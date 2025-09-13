@@ -27,8 +27,8 @@ export default function MainLayout() {
       <AppShell.Footer>
         <FooterComponent
           year="2025"
-          fullName="chanadda"
-          studentId="670612039"
+          fullName="Natpakan Kanthasorn"
+          studentId="670610689"
         />
       </AppShell.Footer>
 
@@ -37,4 +37,4 @@ export default function MainLayout() {
       </AppShell.Main>
     </AppShell>
   );
-}
+};

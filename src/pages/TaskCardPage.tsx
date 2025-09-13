@@ -10,14 +10,32 @@ import {
   ActionIcon,
 } from "@mantine/core";
 import { IconTrash } from "@tabler/icons-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import AddTaskModal from "../components/AddTaskModal";
 import { useTaskStore } from "../store/TaskItemStore";
+import { Badge } from '@mantine/core';
 export default function HomePage() {
-  const { tasks, addTask, toggleTask, removeTask } = useTaskStore();
+  const { tasks, addTask, toggleTask, removeTask, setTasks } = useTaskStore();
   const [modalOpened, setModalOpened] = useState(false);
+  const [isFirstLoad,setFirstLoad] =  useState(true);
 
+  useEffect(() => {
+    if(isFirstLoad) {
+      setFirstLoad(false);
+      return;
+    }
+    const saveTasks = JSON.stringify(tasks);
+    localStorage.setItem("task",saveTasks);
+  },[tasks]);
+
+  useEffect(() => {
+    const loadTasks = localStorage.getItem("task");
+    if(loadTasks === null) {
+      return;
+    }
+    setTasks(JSON.parse(loadTasks));
+  },[])
   return (
     <Container size="lg" py="lg">
       <Stack align="center">
@@ -40,7 +58,13 @@ export default function HomePage() {
             <Card withBorder shadow="sm" radius="md" mb="sm" key={task.id}>
               <Group justify="space-between" align="flex-start">
                 <Stack>
-                  {/* เพิ่ม assignees ตรงนี้*/}
+                  <Group>
+                    {task.assignees.map((assignees) => (
+                      <Badge variant="light" color="blue">
+                        {assignees}
+                      </Badge>
+                    ))}
+                  </Group>
                   <Text
                     fw={600}
                     td={task.isDone ? "line-through" : "none"}
@@ -62,7 +86,7 @@ export default function HomePage() {
                     </Text>
                   )}
                   {task.doneAt && (
-                    <Text size="xs" c="chanadda">
+                    <Text size="xs" c="natpakan">
                       Done at: {dayjs(task.doneAt).format("ddd MMM DD YYYY")}
                     </Text>
                   )}
